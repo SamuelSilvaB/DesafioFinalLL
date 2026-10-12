@@ -10,8 +10,8 @@ class AnimeBase(BaseModel):
     score: Optional[float] = Field(default=None, ge=0, le=10)
     status: AnimeStatus = AnimeStatus.PLANEJO_ASSISTIR
     cover: Optional[str] = None
-    #author_id: Optional[int] = None
-    #studio_id: Optional[int] = None
+    author_id: Optional[int] = None
+    studio_id: Optional[int] = None
 
     @model_validator(mode="after")
     def validar_watched(self)-> Self:

@@ -7,7 +7,7 @@ from app.models import Anime
 from app.schema.anime import AnimeCover, AnimeCreate, AnimePublic
 from app.utils.files import delete_cover, read_and_validate_image, save_cover
 
-router = APIRouter(prefix='/anime', tags=['animes'])
+anime_router = APIRouter(prefix='/anime', tags=['animes'])
 
 
 def get_anime_or_404(session: SessionDep, anime_id: int) -> Anime:
@@ -19,7 +19,7 @@ def get_anime_or_404(session: SessionDep, anime_id: int) -> Anime:
     return anime
 
 
-@router.post('/', status_code=HTTPStatus.CREATED, response_model=AnimePublic)
+@anime_router.post('/', status_code=HTTPStatus.CREATED, response_model=AnimePublic)
 def create_anime(anime: AnimeCreate, session: SessionDep):
     db_anime = Anime(**anime.model_dump())
     session.add(db_anime)
@@ -28,13 +28,13 @@ def create_anime(anime: AnimeCreate, session: SessionDep):
     return db_anime
 
 
-@router.get('/{anime_id}', response_model=AnimePublic)
+@anime_router.get('/{anime_id}', response_model=AnimePublic)
 def read_anime(anime_id: int, session: SessionDep):
     return get_anime_or_404(session, anime_id)
 
 
 # ---------- Obrigatório: upload da capa ----------
-@router.post('/{anime_id}/cover', response_model=AnimeCover)
+@anime_router.post('/{anime_id}/cover', response_model=AnimeCover)
 def upload_cover(anime_id: int, cover_file: UploadFile, session: SessionDep):
     anime = get_anime_or_404(session, anime_id)
 
@@ -57,7 +57,7 @@ def upload_cover(anime_id: int, cover_file: UploadFile, session: SessionDep):
 
 
 # ---------- Desafio: DELETE da capa ----------
-@router.delete('/{anime_id}/cover', status_code=HTTPStatus.NO_CONTENT)
+@anime_router.delete('/{anime_id}/cover', status_code=HTTPStatus.NO_CONTENT)
 def remove_cover(anime_id: int, session: SessionDep):
     anime = get_anime_or_404(session, anime_id)
 
@@ -74,7 +74,7 @@ def remove_cover(anime_id: int, session: SessionDep):
 
 
 # ---------- Intermediário: delete_anime apagando a capa ----------
-@router.delete('/{anime_id}', status_code=HTTPStatus.NO_CONTENT)
+@anime_router.delete('/{anime_id}', status_code=HTTPStatus.NO_CONTENT)
 def delete_anime(anime_id: int, session: SessionDep):
     anime = get_anime_or_404(session, anime_id)
 

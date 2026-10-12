@@ -7,13 +7,16 @@ from sqlalchemy.orm import (
 Mapped,
 mapped_as_dataclass,
 mapped_column,
+relationship
 
 )
 from app.enums.anime_status import AnimeStatus
 from app.models.base import table_registry
-#if TYPE_CHECKING:
-#from .author import Author
-#from .studio import Studio
+
+if TYPE_CHECKING:
+    from .author import Author
+    from .studio import Studio
+
 @mapped_as_dataclass(table_registry)
 class Anime:
     __tablename__ = 'anime'
@@ -27,18 +30,18 @@ class Anime:
     default=AnimeStatus.PLANEJO_ASSISTIR,
     )
     cover: Mapped[str | None] = mapped_column(default=None)
-    #author_id: Mapped[int | None] = mapped_column(
-    #ForeignKey('author.id'), default=None, nullable=True
-    #)
-    #studio_id: Mapped[int | None] = mapped_column(
-    #ForeignKey('studio.id'), default=None, nullable=True
-    #)
-    #author: Mapped[Author | None] = relationship(
-    #back_populates='animes', default=None
-    #)
-    #studio: Mapped[Studio | None] = relationship(
-    #back_populates='animes', default=None
-    #)
+    author_id: Mapped[int | None] = mapped_column(
+    ForeignKey('author.id'), default=None, nullable=True
+    )
+    studio_id: Mapped[int | None] = mapped_column(
+    ForeignKey('studio.id'), default=None, nullable=True
+    )
+    author: Mapped[Author | None] = relationship(
+    back_populates='animes', default=None
+    )
+    studio: Mapped[Studio | None] = relationship(
+    back_populates='animes', default=None
+    )
     created_at: Mapped[datetime] = mapped_column(
     server_default=func.now(), init=False
     )
